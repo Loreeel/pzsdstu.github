@@ -10,6 +10,9 @@ if (isset($_SESSION['id'])) {
 }
 ?> <!--check role and draw addNews button-->
 
+    <div class="container align-middle d-flex flex-row bg-light rounded shadow py-2" id="newsSort">
+        <label class="form-label mx-3">Категорії</label>
+    </div>
     <div class="container bg-light rounded shadow py-2" id="newsList"></div>
 
     <div class="modal fade" id="newsModal" tabindex="-1" aria-labelledby="newsModalLabel" aria-hidden="true">
@@ -25,6 +28,9 @@ if (isset($_SESSION['id'])) {
                         <div class="mb-3">
                             <label for="news-title" class="col-form-label">Заголовок новини:</label>
                             <input type="text" class="form-control" id="news-title">
+                        </div>
+                        <div id="dropdown-div" class="mb-3">
+                            <label for="news-category" class="col-form-label">Категорія новини:</label>
                         </div>
                         <div class="mb-3">
                             <label for="news-text" class="col-form-label">Текст новини:</label>
@@ -50,7 +56,8 @@ if (isset($_SESSION['id'])) {
 
     <script>
         //FE methods
-        function modalForEditContent(button){
+        function modalForEditContent(button) {
+
             let newsModal = document.getElementById('newsModal')
 
             let recipient = button.getAttribute('data-bs-whatever')
@@ -58,34 +65,49 @@ if (isset($_SESSION['id'])) {
             let newsId = newsModal.querySelector('#news-id')
             newsId.textContent = recipient
 
-            selectOneNews(recipient,function (res)
-            {
+            //fill current indo
+            selectOneNews(recipient, function (res) {
+                console.log(res)
                 let data = res[0]
+                let newsModalLabel = newsModal.querySelector('#newsModalLabel')
                 let newsTitle = newsModal.querySelector('#news-title')
                 let newsImage = newsModal.querySelector('#news-image')
-                $('#summernote').summernote('code',data['content'])
+                $('#summernote').summernote('code', data['content'])
 
+                newsModalLabel.innerHTML = 'Редагування новини'
                 newsTitle.value = data['title']
                 newsImage.value = data['image']
             })
-
+            //set events to button
             $('#news-submit').off('click')
             $('#news-submit').html('Змінити')
-            $('#news-submit').on('click',function ()
-            {
+            $('#news-submit').on('click', function () {
                 updNews()
             })
         }
-        function modalForAddContent(){
+
+        function modalForAddContent() {
+
+            let newsModalLabel = newsModal.querySelector('#newsModalLabel')
+
+            let newsTitle = newsModal.querySelector('#news-title')
+            let newsImage = newsModal.querySelector('#news-image')
+            newsTitle.value = ''
+            newsImage.value = ''
+            $('#summernote').summernote('code', '')
+            newsModalLabel.innerHTML = 'Створення новини'
+
             $('#news-submit').off('click')
-            $('#news-submit').val('Створити')
-            $('#news-submit').on('click',function ()
-            {
+            $('#news-submit').html('Створити')
+
+            $('#news-submit').on('click', function () {
                 createNews()
             })
         }
+
         //DB methods
-        function updNews(){
+        function updNews() {
+
             let newsModal = document.getElementById('newsModal')
             let newsTitle = newsModal.querySelector('#news-title')
             let newsContent = $('#summernote').summernote('code')
@@ -93,44 +115,76 @@ if (isset($_SESSION['id'])) {
             let newsId = newsModal.querySelector('#news-id')
 
             updateNews({
-                'id':newsId.textContent,
+                'id': newsId.textContent,
                 'title': newsTitle.value,
-                'content':newsContent,
-                'image':newsImage.value
-            })
+                'content': newsContent,
+                'image': newsImage.value,
+                'news_category': $('#news-category option:selected').prop('id')
+            },function(){fillPage($('#news-category-sort option:selected').prop('id'))})
         }
-        function createNews(){
+
+        function createNews() {
             newNews(
                 {
-                    'title':document.getElementById('news-title').value,
-                    'content':$('#summernote').summernote('code'),
+                    'title': document.getElementById('news-title').value,
+                    'content': $('#summernote').summernote('code'),
                     'image': document.getElementById('news-image').value,
-                    'date':new Date().toISOString().split('T')[0]
-                })
+                    'date': new Date().toISOString().split('T')[0],
+                    'news_category': $('#news-category option:selected').prop('id')
+                },function(){ fillPage($('#news-category-sort option:selected').prop('id'))}
+            )
         }
-        function fillPage(){
+
+        function delNews(id)
+        {
+            deleteNews(id,function(){fillPage($('#news-category-sort option:selected').prop('id'))})
+        }
+
+        function fillNewsByCategory(category_id) {
+
+        }
+
+
+        function fillPage(category_id) {
+
             let role = <?php
-                if (isset($_SESSION['id']))
-                {
+                if (isset($_SESSION['id'])) {
                     echo $_SESSION['role'];
-                }
-                else echo 0;
+                } else echo 0;
                 ?>;
 
+            selectNews(category_id,function (data) {
+                const table = new TableAdapter(data)
+                document.getElementById("newsList").innerHTML = table.getNewsItem(role)
+                $('#newsModal').modal('hide')
+            })
+        }
+
+        function fillCategoryDropdown() {
             const url = "../database/select.php"
-            sendFetchRequest('POST',url,
+            sendFetchRequest('POST', url,
                 {
-                    "table": "News"
+                    "table": "NewsCategories"
                 })
-                .then( data=>
-                {
-                    const table = new TableAdapter(data)
-                    document.getElementById("newsList").innerHTML+=table.getNewsItem(role)
+                .then(data => {
+                    const dropdown = new TableAdapter(data)
+                    document.getElementById("dropdown-div").innerHTML += dropdown.getDropDownList('name_category', 'news-category')
+
+                    document.getElementById("newsSort").innerHTML+= dropdown.getDropDownList('name_category', 'news-category-sort')
+
+                    let nullCategory = '<option id="news_category" selected>-</option>'
+
+                    $('#news-category-sort')[0].insertAdjacentHTML('afterbegin',nullCategory)
+
+                    $('#news-category-sort').on('change', function () {
+                        fillPage($('#news-category-sort option:selected').prop('id'))
+                    })
                 })
         }
 
         //events
-        $(document).ready(function() {
+        $(document).ready(function () {
+
             $('#summernote').summernote({
                 height: 300,                 // set editor height
                 minHeight: 250,             // set minimum height of editor
@@ -144,12 +198,15 @@ if (isset($_SESSION['id'])) {
 
             $('.dropdown-toggle').dropdown();//init toggle message
 
-            const types = ['.png', '.jpg', '.jpeg', '.gif','.mp4']
+            const types = ['.png', '.jpg', '.jpeg', '.gif', '.mp4']
 
-            replaceImageButton($('.note-icon-picture').parent(),types,'../../uploaded/photo/news')//replace summernote button to custom button
-            fillPage()//fill news content
+
+            replaceImageButton($('.note-icon-picture').parent(), types, '../../uploaded/photo/news')//replace summernote button to custom button
+            fillPage($('#news-category-sort option:selected').prop('id'))//fill news content
+            fillCategoryDropdown()//fill category news dropdown
+
             //setting event to swap between modalWindows
-            $('#imagesUploadModal').on('hide.bs.modal',function () {
+            $('#imagesUploadModal').on('hide.bs.modal', function () {
                 $('#newsModal').modal('show')
             })
         })

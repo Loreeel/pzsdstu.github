@@ -131,10 +131,7 @@ function setImagePreview(input,types,directory,summernote) {
                 video.controls = true
                 summernote.summernote('code',summernote.summernote('code')+video.outerHTML)
             }
-
-
         }
-
     }
 
     const uploadToServer = () => {

@@ -1,35 +1,37 @@
 
-function newNews(body)
-{
+async function selectNews(category,callback) {
+    if(category==null) category = 'news_category'
+    const url = "../database/news/selectNewsByCategory.php"
+    getData({"category": category}, url).then(res=>{
+        callback(res)
+    })
+}
+
+async function newNews(body,callback) {
     const url = '../database/news/createNews.php'
-    AJAX(body,url,function (){
-        document.location.reload()
+    getData(body,url).then(()=>{
+        callback()
     })
 }
 
-function deleteNews(id)
-{
-    let body = {"id":id}
+async function deleteNews(id,callback) {
     const url = '../database/news/deleteNews.php'
-    AJAX(body,url,function (){
-        document.location.reload()
+    getData({"id": id},url).then(()=>{
+        callback()
     })
 }
 
-function updateNews(body)
-{
+
+async function updateNews(body,callback) {
     const url = '../database/news/updateNews.php'
-    AJAX(body,url,function (){
-        document.location.reload()
+    getData(body,url).then(()=>{
+        callback()
     })
 }
 
-function selectOneNews(id,callback)
-{
-    let body = {"id":id}
-    const url = '../database/news/selectOneNews.php'
-    sendFetchRequest('POST',url,body).then( data=>
-    {
-        callback(data)
+async function selectOneNews(id,callback) {
+    const url = "../database/news/selectOneNews.php"
+    getData({"id": id}, url).then(res=>{
+        callback(res)
     })
 }

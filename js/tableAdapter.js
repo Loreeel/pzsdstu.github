@@ -48,7 +48,6 @@ class TableAdapter {
                 }
             })
 
-
             rez += `</tr>`
         })
 
@@ -57,11 +56,11 @@ class TableAdapter {
         </div>`
     }
 
-    getDropDownList(column) {
+    getDropDownList(column,id) {
         let rez = ''
-        rez += `<select class="form-select form-select-sm" aria-label="Оберіть із списку">`
+        rez += `<select id="${id}" class="form-select form-select-sm mb-3 w-50" aria-label="Оберіть із списку">`
         this.array.forEach(item => {
-            rez += `<option>${item[column]}</option>`
+            rez += `<option id="${item["id"]}">${item[column]}</option>`
         })
         return rez + `</select>`
     }
@@ -86,12 +85,13 @@ class TableAdapter {
                                 <div class="header">
                                     <h5 class="card-title">${item["title"]}</h5>
                                     <h6 class="card-subtitle mb-2 text-muted"><small>${item["date"]}</small></h6>
+                                    <h6 class="card-subtitle mb-2 text-muted"><small>${item["name_category"]}</small></h6>
                                 </div>
                                 <div class="card-text mb-5"> ${newsContent} </div>
                                 <div class="card-body position-absolute bottom-0 end-0">
                                      <a type="button" href="../pages/news_page.php?id=${item['id']}" class="btn btn-primary mx-1">Переглянути</a type="button">`
                                     if (role == 1) rez +=
-                                    `<button type="button" onclick="deleteNews(${item["id"]})" class="btn btn-outline-danger ">
+                                    `<button type="button" onclick="delNews(${item["id"]})" class="btn btn-outline-danger ">
                                         <i class="fa-solid fa-bucket"></i>
                                     </button>
                                     <button onclick="modalForEditContent(this)" type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#newsModal" data-bs-whatever="${item["id"]}">
@@ -102,31 +102,6 @@ class TableAdapter {
                         </div>
                     </div>
                 </div>`
-            //
-            //             <div class="card-body">
-            //                     <div class="header">
-            //                         <h5 class="card-title">${item["title"]}</h5>
-            //                          <h6 class="card-subtitle mb-2 text-muted"><small>${item["date"]}</small></h6>
-            //                     </div>
-            //                     ${console.log(newsContent)}
-            //                     <div class="card-text"> ${newsContent} </div>
-            //                 </div>`
-            //
-            //                 rez+= `
-            //                 <div class="card-body position-absolute bottom-0 end-0">
-            //                 <a type="button" href="../pages/news_page.php?id=${item['id']}" class="btn btn-primary">Переглянути</a type="button">`
-            //
-            // if (role == 1) rez += `
-            //                 <button type="button" onclick="deleteNews(${item["id"]})" class="btn btn-outline-danger ">
-            //                     <i class="fa-solid fa-bucket"></i>
-            //                 </button>
-            //                 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editNewsModal" data-bs-whatever="${item["id"]}">
-            //                     <i class="fa-solid fa-pen"></i>
-            //                 </button>
-            //                 `;
-            //
-            //            </div>
-
         })
         return rez
     }
