@@ -1,0 +1,121 @@
+/**{
+    user-select: none;
+}*/
+
+.btnn_up {
+    color: #009409;
+    position: relative;
+    border-radius: 10px;
+    border: 1px solid #5db600;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 0.5rem 1.5rem;
+    font-weight: 700;
+    outline: none;
+    background: #fff;
+    transition: all 0.22s;
+    cursor: pointer;
+    margin-right: 1rem;
+    display: flex;
+}
+
+.btnn_up.primary {
+    background: #3475ef;
+    color: #fff;
+}
+
+.btnn_up:active {
+    box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.btnn_up:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+.btnn {
+    display: flex;
+    color: #1595f8;
+    position: relative;
+    border-radius: 10px;
+    border: 1px solid #1595f8;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 0.5rem 1.5rem;
+    font-weight: 700;
+    outline: none;
+    background: #fff;
+    transition: all 0.22s;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+.btnn.primary {
+    background: #42b983;
+    color: #fff;
+}
+
+.btnn:active {
+    box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.btnn:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+input[type=file] {
+    display: none;
+}
+.preview {
+    display: flex;
+    flex-wrap: wrap;
+    padding: .5rem;
+}
+
+.preview-image {
+    position: relative;
+    margin-bottom: .5rem;
+    margin-right: .5rem;
+}
+.preview-image img {
+    width: 160px;
+    height: auto;
+}
+.preview-image video {
+    width: 160px;
+    height: auto;
+}
+.preview_remove  {
+    width:30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-weight: bold;
+    display: flex;
+    background: rgba(255,255,255,.5);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.preview_bb  {
+    z-index: 100;
+    width:30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-weight: bold;
+    display: flex;
+    background: rgba(255,255,255,.5);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.tmppreview img{
+    width: 160px;
+    height: auto;
+}
+.tmppreview video{
+    width: 160px;
+    height: auto;
+}
