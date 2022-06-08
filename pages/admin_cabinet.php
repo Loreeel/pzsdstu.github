@@ -2,7 +2,7 @@
 session_start();
 if (isset($_SESSION["role"])) {
     if ($_SESSION["role"] != 1) {
-        header('Location: home.php');
+        header('Location: news.php');
     } else {
         include("../modules/header.php"); ?>
 
@@ -45,8 +45,7 @@ if (isset($_SESSION["role"])) {
             </div>
             <div class="col-sm-9">
                 <div class="tab-content border-top py-2 bg-light" id="v-pills-tabContent">
-                    <div class="tab-pane fade show active " id="v-pills-home" role="tabpanel"
-                         aria-labelledby="v-pills-home-tab">
+                    <div class="tab-pane fade show active " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
                         <div class="container d-flex justify-content-center">
                             Керування головною сторінкою
                         </div>
@@ -67,109 +66,154 @@ if (isset($_SESSION["role"])) {
                                     </button>
                                 </div>
                             </div>
-                        </div>
 
-                        <script type="text/javascript" src="../js/tablePagination.js"></script>
-                        <script src="../js/newsCategory.js"></script>
-                        <script>
+                            <script type="text/javascript" src="../js/tablePagination.js"></script>
+                            <script src="../js/newsCategory.js"></script>
+                            <script>
 
-                            $(document).ready(function () {
-                                createNewsCategoryAddForm()
-                                fillNewsCategoryTbl()
-                            });
+                                $(document).ready(function () {
+                                    createNewsCategoryAddForm()
+                                    fillNewsCategoryTbl()
+                                });
 
-                            function addCategory(nameCategory) {
-                                const value = nameCategory.val()
-                                nameCategory.val('')
+                                function addCategory(nameCategory) {
+                                    const value = nameCategory.val()
+                                    nameCategory.val('')
 
-                                if (!value) alert('Введіть назву категорії')
+                                    if (!value) alert('Введіть назву категорії')
 
-                                else {
-                                    let body = {"name": value}
-                                    newNewsCategory(body, function () {
-                                        fillNewsCategoryTbl()
-                                    })
-                                }
-                            }
-
-                            function createNewsCategoryAddForm() {
-                                let container = document.getElementById('newsCategoryAddForm')
-                                let content = `
-                    <div id="addNewsCategory" tabindex="-1" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div id="newsCategoryContent" class="accordion-body">
-                            <form>
-                                <div class="mb-3">
-                                    <label  for="news-category-name" class="col-form-label">Назва категорії</label>
-                                    <div class="d-flex">
-                                        <input class="form-control mx-2" id="category-name">
-                                        <button onclick="addCategory($('#category-name'))" type="button" class="btn btn-primary">Створити</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                </div>`
-                                container.innerHTML += content
-                            }
-
-                            function editNewsCategory(elem, id) {
-                                let nameCategory = elem.parentElement.parentElement.firstChild
-                                if (!nameCategory.querySelector('input')) {
-                                    let input = document.createElement('input')
-                                    input.classList.add('form-control')
-                                    input.value = nameCategory.innerHTML
-                                    nameCategory.innerHTML = ""
-                                    nameCategory.appendChild(input)
-                                    input.focus()
-                                    input.addEventListener('blur', function () {
-                                        let body = {
-                                            "id": id,
-                                            "name_category": this.value
-                                        }
-                                        updateNewsCategory(body, function () {
+                                    else {
+                                        let body = {"name": value}
+                                        newNewsCategory(body, function () {
                                             fillNewsCategoryTbl()
                                         })
-                                    })
+                                    }
                                 }
-                            }
 
-                            function fillNewsCategoryTbl() {
-                                let body = {"table": "NewsCategories"}
-                                const url = "../database/select.php"
-                                sendFetchRequest('POST', url, body)
-                                    .then(data => {
-                                        let content = data
-                                        let col = ['name_category']
-                                        let titles = ['Назва категорії']
-                                        let table = new TableAdapter(content, "Категорії", 'categoryTable')
-                                        document.getElementById("newsCategoryTable").innerHTML = table.getViewTable(col, titles, true)
-                                        setTablePagination('#categoryTable', [5, 10])
-                                    })
-                            }
+                                function createNewsCategoryAddForm() {
+                                    let container = document.getElementById('newsCategoryAddForm')
+                                    let content = `
+                                <div id="addNewsCategory" tabindex="-1" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                    <div id="newsCategoryContent" class="accordion-body">
+                                        <form>
+                                            <div class="mb-3">
+                                                <label  for="news-category-name" class="col-form-label">Назва категорії</label>
+                                                <div class="d-flex">
+                                                    <input class="form-control mx-2" id="category-name">
+                                                    <button onclick="addCategory($('#category-name'))" type="button" class="btn btn-primary">Створити</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>`
+                                    container.innerHTML += content
+                                }
 
-                        </script>
+                                function editNewsCategory(elem, id) {
+                                    let nameCategory = elem.parentElement.parentElement.firstChild
+                                    if (!nameCategory.querySelector('input')) {
+                                        let input = document.createElement('input')
+                                        input.classList.add('form-control')
+                                        input.value = nameCategory.innerHTML
+                                        nameCategory.innerHTML = ""
+                                        nameCategory.appendChild(input)
+                                        input.focus()
+                                        input.addEventListener('blur', function () {
+                                            let body = {
+                                                "id": id,
+                                                "name_category": this.value
+                                            }
+                                            updateNewsCategory(body, function () {
+                                                fillNewsCategoryTbl()
+                                            })
+                                        })
+                                    }
+                                }
 
-                    </div>
-
-                    <div class="tab-pane fade" id="v-pills-history" role="tabpanel"
-                         aria-labelledby="v-pills-history-tab">
-                        <div class="container d-flex justify-content-center">
-                            Керування сторінкою історії кафедри
+                                function fillNewsCategoryTbl() {
+                                    let body = {"table": "NewsCategories"}
+                                    const url = "../database/select.php"
+                                    sendFetchRequest('POST', url, body)
+                                        .then(data => {
+                                            let content = data
+                                            let col = ['name_category']
+                                            let titles = ['Назва категорії']
+                                            let table = new TableAdapter(content, "Категорії", 'categoryTable')
+                                            document.getElementById("newsCategoryTable").innerHTML = table.getViewTable(col, titles, true)
+                                            setTablePagination('#categoryTable', [5, 10])
+                                        })
+                                }
+                            </script>
                         </div>
                     </div>
 
-                    <!--контакти <div class="tab-pane fade" id="v-pills-contact" role="tabpanel"-->
-                    <!--                         aria-labelledby="v-pills-contact-tab">-->
-                    <!--                        <div class="container d-flex justify-content-center">-->
-                    <!--                            Керування розділом контактів кафедри-->
-                    <!--                        </div>-->
-                    <!---->
-                    <!--                    </div>-->
+                    <div class="tab-pane fade" id="v-pills-history" role="tabpanel" aria-labelledby="v-pills-history-tab">
+                        <div class="container justify-content-center w-100">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThreeHistory" aria-expanded="false" aria-controls="collapseThreeHistory">
+                                        Оновити історію
+                                    </button>
+                                </h2>
+                                <div id="collapseThreeHistory" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+
+                                        <div class="summernote_history"></div>
+
+                                        <button class="btn btn-outline-secondary" id="BB_historySubmit">Зберегти</button>
+
+                                        <script src="../js/scripts/imageUploadButton.js"></script>
+                                        <script src="../js/scripts/previewInputImage.js"></script>
+                                        <script src="../js/scripts/uploadFile.js.js"></script>
+
+                                        <script>
+                                            // async function fillAboutText(textArea) {
+                                            //     const url = "../database/select.php"
+                                            //     getData({"table": "About"}, url).then(res=>{
+                                            //         textArea.summernote('code', res[0]['content']);
+                                            //     })
+                                            // }
+                                            //
+                                            // async function updateAboutText(content) {
+                                            //     const url = "../database/aboutPage/aboutUpdate.php"
+                                            //     getData({"content": content}, url).then(res=>{
+                                            //         fillAboutText($('.summernote'))
+                                            //     })
+                                            // }
+
+                                            $(document).ready(function() {
+                                                $('.summernote_history').summernote({
+                                                    height: 300,                 // set editor height
+                                                    minHeight: 250,             // set minimum height of editor
+                                                    maxHeight: 700,             // set maximum height of editor
+                                                    focus: true,                  // set focus to editable area after initializing summernote
+                                                    lang: 'uk-UA',
+                                                    placeholder: ""
+                                                });
+
+                                                $('.summernote_history').summernote('code', '');
+                                                // const types = ['.png', '.jpg', '.jpeg', '.gif','.mp4']
+                                                //
+                                                // replaceImageButton($('.note-icon-picture').parent(),types,'../../uploaded/photo')//replace summernote button to custom button
+                                                //
+                                                // fillAboutText($('.summernote'))
+                                                //
+                                                // $('#BBSubmit').attr('onclick',null)
+                                                // $('#BBSubmit').on('click',function (){
+                                                //     updateAboutText($('.summernote').summernote('code'))
+                                                // })
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="tab-pane fade" id="v-pills-users" role="tabpanel" aria-labelledby="v-pills-users-tab">
                         <div class="container d-flex justify-content-center w-100">
                             Керування користувачами системи
                         </div>
-
                     </div>
 
                     <div class="tab-pane fade" id="v-pills-about" role="tabpanel" aria-labelledby="v-pills-about-tab">
@@ -182,19 +226,32 @@ if (isset($_SESSION["role"])) {
                                 </h2>
                                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
-<!--                                        <div class="container" id="about_area">-->
-<!---->
-<!--                                        </div>-->
-                                        <div class="summernote"></div>
-                                        <button class="btn btn-outline-secondary" id="BBSubmit">Зберегти</button>
+
+                                        <div class="summernote_about"></div>
+
+                                        <button class="btn btn-outline-secondary" id="BB_aboutSubmit">Зберегти</button>
 
                                         <script src="../js/scripts/imageUploadButton.js"></script>
                                         <script src="../js/scripts/previewInputImage.js"></script>
                                         <script src="../js/scripts/uploadFile.js.js"></script>
 
                                         <script>
+                                            async function fillAboutText(textArea) {
+                                                const url = "../database/select.php"
+                                                getData({"table": "About"}, url).then(res=>{
+                                                    textArea.summernote('code', res[0]['content']);
+                                                })
+                                            }
+
+                                            async function updateAboutText(content) {
+                                                const url = "../database/aboutPage/aboutUpdate.php"
+                                                getData({"content": content}, url).then(res=>{
+                                                    fillAboutText($('.summernote_about'))
+                                                })
+                                            }
+
                                             $(document).ready(function() {
-                                                $('.summernote').summernote({
+                                                $('.summernote_about').summernote({
                                                     height: 300,                 // set editor height
                                                     minHeight: 250,             // set minimum height of editor
                                                     maxHeight: 700,             // set maximum height of editor
@@ -207,52 +264,20 @@ if (isset($_SESSION["role"])) {
                                                 const types = ['.png', '.jpg', '.jpeg', '.gif','.mp4']
 
                                                 replaceImageButton($('.note-icon-picture').parent(),types,'../../uploaded/photo')//replace summernote button to custom button
+
+                                                fillAboutText($('.summernote_about'))
+
+                                                $('#BB_aboutSubmit').attr('onclick',null)
+                                                $('#BB_aboutSubmit').on('click',function (){
+                                                    updateAboutText($('.summernote_about').summernote('code'))
+                                                })
                                             });
                                         </script>
                                     </div>
                                 </div>
                             </div>
-
-                            <div style="padding: 15px; white-space: break-spaces" class="d-block bg-light mx-5" id="testdiv">
-
-                            </div>
                         </div>
-<!--                        <script src="../js/scripts/bbcode_buttons.js"></script>-->
-<!--                        <script src="../js/js-bbcode-parser/xbbcode.js"></script>-->
-<!---->
-<!--                        <script> addBbButtonsAndField("about_area") </script>-->
-                        <script>
-
-                            async function fillAboutText(textArea) {
-                                const url = "../database/select.php"
-                                getData({"table": "About"}, url).then(res=>{
-                                    textArea.summernote('code', res[0]['content']);
-
-                                    //$(textArea).val(res[0]['content'])
-                                    //$('#testdiv').html(parseFromBB(res[0]['content']).html)
-                                })
-                            }
-
-                            async function updateAboutText(content) {
-                                const url = "../database/aboutPage/aboutUpdate.php"
-                                getData({"content": content}, url).then(res=>{
-                                    fillAboutText($('.summernote'))
-                                })
-                            }
-
-                            $(document).ready(function () {
-
-                                fillAboutText($('.summernote'))
-
-                                $('#BBSubmit').attr('onclick',null)
-                                $('#BBSubmit').on('click',function (){
-                                    updateAboutText($('.summernote').summernote('code'))
-                                })
-                            });
-
-                        </script>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -260,7 +285,7 @@ if (isset($_SESSION["role"])) {
         <?php include("../modules/footer.php");
     }
 } else {
-    header('Location: home.php');
+    header('Location: news.php');
 }
 ?>
 

@@ -84,7 +84,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="../pages/home.php">Головна</a>
+                    <a class="nav-link active" aria-current="page" href="../pages/news.php"> <!--href="../pages/home.php"-->Головна</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../pages/about.php">Про кафедру</a>
@@ -92,9 +92,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="../pages/history.php">Історія кафедри</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../pages/news.php">Новини</a>
-                </li>
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="../pages/news.php">Новини</a>-->
+<!--                </li>-->
 
                 <!--                <li class="nav-item dropdown">-->
                 <!--                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
